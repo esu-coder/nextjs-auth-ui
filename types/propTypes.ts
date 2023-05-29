@@ -19,5 +19,20 @@ export interface InputProps {
 
 export interface ButtonProps {
     title: string;
-    type: 'submit' | 'button' | 'reset';
+    type?: 'submit' | 'button' | 'reset';
+    disabled?: boolean,
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+}
+
+interface StaticImageData {
+    src: string;
+    height: number;
+    width: number;
+    blurDataURL?: string;
+}
+
+export interface SocialButtonProps {
+    title: string;
+    onClick: React.MouseEventHandler<HTMLButtonElement>;
+    icon: StaticImageData
 }

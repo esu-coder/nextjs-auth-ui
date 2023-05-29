@@ -13,7 +13,7 @@ import {
 } from './FormElements'
 import InputFeild from './InputFeild'
 import Button from '../Button'
-import { InputErros } from '../../types/error'
+import { InputError } from '../../types/error'
 import { getErrorMsg } from '../../helpers'
 
 const SignupForm = () => {
@@ -24,7 +24,7 @@ const SignupForm = () => {
         confirmPassword: ""
     })
 
-    const [validationErrors, setValidationErrors] = useState<InputErros[]>([])
+    const [validationErrors, setValidationErrors] = useState<InputError[]>([])
 
     const validateData = (): boolean => {
         const err = []
