@@ -2,9 +2,12 @@ import styled, { css } from "styled-components";
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 
 export const Container = styled.div`
+    width: 100%;
+`
+
+export const Wrapper = styled.div`
     display: flex;
     align-items: center;
-    width: 100%;
     position: relative;
 
     & svg {
@@ -36,3 +39,8 @@ export const HidePassIcon = styled(BsEyeSlash)`
     ${EyeIcon}
 `
 
+export const ErrorText = styled.p`
+    font-size: 0.8rem;
+    color: #fa4343;
+    margin: 0.5rem 0;
+`

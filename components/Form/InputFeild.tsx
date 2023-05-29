@@ -4,10 +4,12 @@ import {
     Container,
     HidePassIcon,
     Input,
-    ShowPassIcon
+    ShowPassIcon,
+    Wrapper,
+    ErrorText
 } from './InputFeildElements'
 
-const InputFeild = ({ placeholder, icon, type, required, value, onChange }: InputProps) => {
+const InputFeild = ({ placeholder, icon, type, required, value, onChange, name, error }: InputProps) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const togglePasswordIcon = () => {
@@ -31,19 +33,29 @@ const InputFeild = ({ placeholder, icon, type, required, value, onChange }: Inpu
 
     return (
         <Container>
-            {icon}
+            <Wrapper>
+                {icon}
 
-            <Input
-                placeholder={placeholder}
-                type={inputType}
-                required={required}
-                value={value}
-                onChange={onChange}
-            />
+                <Input
+                    placeholder={placeholder}
+                    type={inputType}
+                    required={required}
+                    value={value}
+                    onChange={onChange}
+                    name={name}
+                />
+
+                {
+                    type === 'password' &&
+                    renderPasswordIcon()
+                }
+            </Wrapper>
 
             {
-                type === 'password' &&
-                renderPasswordIcon()
+                error &&
+                <ErrorText>
+                    {error}
+                </ErrorText>
             }
         </Container>
     )

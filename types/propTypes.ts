@@ -13,6 +13,8 @@ export interface InputProps {
     value: string;
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     required?: boolean;
+    name?: string;
+    error?: string;
 }
 
 export interface ButtonProps {
