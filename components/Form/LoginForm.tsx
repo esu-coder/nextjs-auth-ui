@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
+import { AxiosError } from 'axios'
 import { AiOutlineMail, AiOutlineUnlock } from 'react-icons/ai'
+import { loginUser } from '../../helpers'
 import AppLogoTitle from '../AppLogoTitle'
 import Button from '../Button'
 import {
@@ -11,10 +14,14 @@ import {
     Link
 } from './FormElements'
 import InputFeild from './InputFeild'
+import { ErrorText } from './InputFeildElements'
 
 const LoginForm = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [submitError, setSubmitError] = useState("")
+    const router = useRouter()
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value)
@@ -24,8 +31,28 @@ const LoginForm = () => {
         setPassword(event.target.value)
     }
 
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+
+        try {
+            setLoading(true)
+
+            const loginRes = await loginUser({ email, password })
+
+            if (loginRes && !loginRes.ok) {
+                setSubmitError(loginRes.error || "")
+            }
+            else {
+                router.push("/")
+            }
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                const errorMsg = error.response?.data?.error
+                setSubmitError(errorMsg)
+            }
+        }
+
+        setLoading(false)
     }
 
     return (
@@ -59,7 +86,15 @@ const LoginForm = () => {
                 <Button
                     type='submit'
                     title='Login'
+                    disabled={loading}
                 />
+
+                {
+                    submitError &&
+                    <ErrorText>
+                        {submitError}
+                    </ErrorText>
+                }
 
                 <InfoTextContainer>
                     <InfoText>

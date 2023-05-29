@@ -19,5 +19,7 @@ export interface InputProps {
 
 export interface ButtonProps {
     title: string;
-    type: 'submit' | 'button' | 'reset';
+    type?: 'submit' | 'button' | 'reset';
+    disabled?: boolean;
+    onClick?: () => void;
 }

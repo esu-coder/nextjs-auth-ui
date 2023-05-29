@@ -15,11 +15,14 @@ import {
 } from './NavElements'
 
 import NavLink from './NavLink'
+import { useSession } from "next-auth/react"
+import { BsFillPersonFill } from 'react-icons/bs'
 
 const Navbar = () => {
 
     const size: WindowSize = useWindowSize()
     const [showMenu, setShowMenu] = useState(false)
+    const { data: session } = useSession()
 
     const openMenu = () => {
         setShowMenu(true)
@@ -52,11 +55,20 @@ const Navbar = () => {
                             <NavLink route="/products">
                                 Products
                             </NavLink>
-                            <NavLink
-                                route="/login"
-                            >
-                                Login
-                            </NavLink>
+
+                            {
+                                session ?
+                                    <NavLink route='/profile'>
+                                        <BsFillPersonFill size={30} />
+                                    </NavLink>
+                                    :
+                                    <NavLink
+                                        route="/login"
+                                    >
+                                        Login
+                                    </NavLink>
+
+                            }
                         </>
                         :
                         <MenuIcon

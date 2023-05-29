@@ -14,7 +14,10 @@ import {
 import InputFeild from './InputFeild'
 import Button from '../Button'
 import { InputErros } from '../../types/error'
-import { getErrorMsg } from '../../helpers'
+import { getErrorMsg, loginUser } from '../../helpers'
+import { useRouter } from 'next/router'
+import axios, { AxiosError } from 'axios'
+import { ErrorText } from './InputFeildElements'
 
 const SignupForm = () => {
     const [data, setData] = useState({
@@ -25,26 +28,29 @@ const SignupForm = () => {
     })
 
     const [validationErrors, setValidationErrors] = useState<InputErros[]>([])
+    const [submitError, setSubmitError] = useState<string>("")
+    const [loading, setLoading] = useState(false)
+    const router = useRouter()
 
     const validateData = (): boolean => {
         const err = []
-        
-        if(data.fullName?.length < 4) {
-            err.push({fullName: "Full name must be atleast 4 characters long"})
+
+        if (data.fullName?.length < 4) {
+            err.push({ fullName: "Full name must be atleast 4 characters long" })
         }
-        else if(data.fullName?.length > 30) {
-            err.push({fullName: "Full name should be less than 30 characters"})
+        else if (data.fullName?.length > 30) {
+            err.push({ fullName: "Full name should be less than 30 characters" })
         }
-        else if(data.password?.length < 6) {
-            err.push({password: "Password should be atleast 6 characters long"})
+        else if (data.password?.length < 6) {
+            err.push({ password: "Password should be atleast 6 characters long" })
         }
-        else if(data.password !== data.confirmPassword) {
-            err.push({confirmPassword: "Passwords don't match"})
+        else if (data.password !== data.confirmPassword) {
+            err.push({ confirmPassword: "Passwords don't match" })
         }
 
         setValidationErrors(err)
 
-        if(err.length > 0) {
+        if (err.length > 0) {
             return false
         }
         else {
@@ -52,13 +58,41 @@ const SignupForm = () => {
         }
     }
 
-    const handleSignup = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
         const isValid = validateData()
 
-        if(isValid) {
+        if (isValid) {
             // sign up
+
+            try {
+                setLoading(true)
+                const apiRes = await axios.post("http://localhost:3000/api/auth/signup", data)
+
+                if (apiRes?.data?.success) {
+                    // save data in session using next auth
+
+                    const loginRes = await loginUser({
+                        email: data.email,
+                        password: data.password
+                    })
+
+                    if (loginRes && !loginRes.ok) {
+                        setSubmitError(loginRes.error || "")
+                    }
+                    else {
+                        router.push("/")
+                    }
+                }
+            } catch (error: unknown) {
+                if (error instanceof AxiosError) {
+                    const errorMsg = error.response?.data?.error
+                    setSubmitError(errorMsg)
+                }
+            }
+
+            setLoading(false)
         }
     }
 
@@ -66,7 +100,7 @@ const SignupForm = () => {
         // We get property name from event.target.name and set the value from onChange in it
         // So name in our input component should be same as the property in data state
 
-        setData({...data, [event.target.name]: event.target.value})
+        setData({ ...data, [event.target.name]: event.target.value })
     }
 
     return (
@@ -119,7 +153,15 @@ const SignupForm = () => {
                 <Button
                     title={"Sign up"}
                     type="submit"
+                    disabled={loading}
                 />
+
+                {
+                    submitError &&
+                    <ErrorText>
+                        {submitError}
+                    </ErrorText>
+                }
 
                 <InfoTextContainer>
                     <InfoText>

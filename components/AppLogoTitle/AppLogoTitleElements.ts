@@ -8,7 +8,7 @@ export const Container = styled(Link)`
     align-items: center;
     margin: 1rem 0;
     text-decoration: none;
-    color: #23C687;
+    color: #24a0ed;
 `
 
 export const AppTitle = styled.h2`
